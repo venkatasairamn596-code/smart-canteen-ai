@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Canteen History</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        header {
+            background: #1f2937;
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 10px 15px;
+            border-radius: 6px;
+        }
+
+        nav a:hover {
+            background: #374151;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 35px auto;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title h2 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .title p {
+            color: #666;
+        }
+
+        .table-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px #d9dee7;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #1f2937;
+            color: white;
+            padding: 14px;
+            text-align: center;
+        }
+
+        td {
+            padding: 14px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f5f7fa;
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .low {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .normal {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .high {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: #777;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 20px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+        }
+
+        .back:hover {
+            background: #1d4ed8;
+        }
+
+        @media (max-width: 800px) {
+
+            header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            nav a {
+                margin: 5px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <h1>🍽️ Smart Canteen AI</h1>
+
+    <nav>
+
+        <a href="/">
+            Prediction
+        </a>
+
+        <a href="/dashboard">
+            📊 Dashboard
+        </a>
+
+        <a href="/history">
+            📋 History
+        </a>
+
+    </nav>
+
+</header>
+
+
+<div class="container">
+
+
+    <div class="title">
+
+        <h2>📋 Daily Prediction History</h2>
+
+        <p>
+            Review previous meal predictions, sales and food waste.
+        </p>
+
+    </div>
+
+
+    <div class="table-box">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Date</th>
+
+                    <th>Attendance</th>
+
+                    <th>Predicted</th>
+
+                    <th>Recommended</th>
+
+                    <th>Actual Sales</th>
+
+                    <th>Food Waste</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="historyTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <a href="/" class="back">
+        ← Back to Prediction
+    </a>
+
+
+</div>
+
+
+<script>
+
+
+fetch("/history-data")
+
+.then(response => response.json())
+
+.then(records => {
+
+    let table =
+        document.getElementById("historyTable");
+
+
+    if (records.length === 0) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="7" class="empty">
+                    No daily records available yet.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    records.forEach(record => {
+
+
+        let predicted =
+            Number(record.predicted_meals);
+
+        let actual =
+            Number(record.actual_sales);
+
+
+        let difference =
+            actual - predicted;
+
+
+        let status = "";
+
+        let statusClass = "";
+
+
+        if (difference < -50) {
+
+            status = "Low Demand";
+
+            statusClass = "low";
+
+        }
+
+        else if (difference > 50) {
+
+            status = "High Demand";
+
+            statusClass = "high";
+
+        }
+
+        else {
+
+            status = "Normal";
+
+            statusClass = "normal";
+
+        }
+
+
+        let row = `
+
+            <tr>
+
+                <td>
+                    ${record.date}
+                </td>
+
+                <td>
+                    ${record.attendance}
+                </td>
+
+                <td>
+                    ${record.predicted_meals}
+                </td>
+
+                <td>
+                    ${record.recommended_meals}
+                </td>
+
+                <td>
+                    ${record.actual_sales}
+                </td>
+
+                <td>
+                    ${record.food_waste}
+                </td>
+
+                <td>
+                    <span class="status ${statusClass}">
+                        ${status}
+                    </span>
+                </td>
+
+            </tr>
+
+        `;
+
+
+        table.innerHTML += row;
+
+    });
+
+})
+
+.catch(error => {
+
+    console.log(
+        "Error loading history:",
+        error
+    );
+
+});
+
+
+</script>
+
+
+</body>
+
+</html>

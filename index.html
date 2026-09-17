@@ -1,0 +1,1998 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Canteen AI - Prediction</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            position: fixed;
+
+            left: 0;
+            top: 0;
+
+            width: 240px;
+            height: 100vh;
+
+            background: #111827;
+
+            color: white;
+
+            padding: 25px 18px;
+
+            z-index: 10;
+        }
+
+
+        .logo {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 40px;
+
+            padding-left: 8px;
+        }
+
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+
+            background: #2563eb;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 21px;
+        }
+
+
+        .logo h2 {
+            margin: 0;
+
+            font-size: 18px;
+        }
+
+
+        .logo span {
+            display: block;
+
+            font-size: 11px;
+
+            color: #9ca3af;
+
+            margin-top: 3px;
+        }
+
+
+        .menu-title {
+            font-size: 11px;
+
+            color: #6b7280;
+
+            text-transform: uppercase;
+
+            margin: 20px 10px 10px;
+        }
+
+
+        .menu a {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 13px 14px;
+
+            margin-bottom: 6px;
+
+            border-radius: 9px;
+
+            color: #d1d5db;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            transition: 0.2s;
+        }
+
+
+        .menu a:hover {
+            background: #1f2937;
+
+            color: white;
+        }
+
+
+        .menu a.active {
+            background: #2563eb;
+
+            color: white;
+        }
+
+
+        .menu-icon {
+            width: 20px;
+
+            text-align: center;
+        }
+
+
+        .sidebar-bottom {
+            position: absolute;
+
+            bottom: 25px;
+
+            left: 18px;
+            right: 18px;
+
+            padding: 15px;
+
+            background: #1f2937;
+
+            border-radius: 10px;
+
+            font-size: 12px;
+
+            color: #9ca3af;
+        }
+
+
+        .sidebar-bottom strong {
+            color: white;
+        }
+
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+            margin-left: 240px;
+
+            padding: 30px 35px;
+
+            min-height: 100vh;
+        }
+
+
+        /* =========================
+           TOP BAR
+        ========================= */
+
+        .topbar {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 28px;
+        }
+
+
+        .page-title h1 {
+            margin: 0;
+
+            font-size: 28px;
+
+            color: #111827;
+        }
+
+
+        .page-title p {
+            margin: 7px 0 0;
+
+            color: #6b7280;
+
+            font-size: 14px;
+        }
+
+
+        .ai-status {
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            background: white;
+
+            padding: 10px 15px;
+
+            border-radius: 9px;
+
+            border: 1px solid #e5e7eb;
+
+            font-size: 12px;
+
+            color: #4b5563;
+        }
+
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+
+            background: #22c55e;
+
+            border-radius: 50%;
+        }
+
+
+        /* =========================
+           LAYOUT
+        ========================= */
+
+        .content-grid {
+            display: grid;
+
+            grid-template-columns: 1.45fr 1fr;
+
+            gap: 22px;
+
+            align-items: start;
+        }
+
+
+        .panel {
+            background: white;
+
+            border-radius: 14px;
+
+            padding: 25px;
+
+            border: 1px solid #e8ebf0;
+
+            box-shadow:
+                0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+
+        .panel-header {
+            margin-bottom: 22px;
+        }
+
+
+        .panel-header h2 {
+            margin: 0;
+
+            font-size: 18px;
+
+            color: #111827;
+        }
+
+
+        .panel-header p {
+            margin: 6px 0 0;
+
+            font-size: 12px;
+
+            color: #9ca3af;
+        }
+
+
+        /* =========================
+           FORM SECTIONS
+        ========================= */
+
+        .section-title {
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            margin: 24px 0 15px;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            color: #374151;
+        }
+
+
+        .section-number {
+            width: 25px;
+            height: 25px;
+
+            background: #eff6ff;
+
+            color: #2563eb;
+
+            border-radius: 7px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 11px;
+
+            font-weight: bold;
+        }
+
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 15px;
+        }
+
+
+        .form-group {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+        }
+
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+
+        label {
+            font-size: 12px;
+
+            font-weight: bold;
+
+            color: #4b5563;
+        }
+
+
+        input,
+        select {
+            width: 100%;
+
+            padding: 12px 13px;
+
+            border: 1px solid #dfe3e8;
+
+            border-radius: 8px;
+
+            background: #fafbfc;
+
+            font-size: 13px;
+
+            color: #1f2937;
+
+            outline: none;
+
+            transition: 0.2s;
+        }
+
+
+        input:focus,
+        select:focus {
+            border-color: #2563eb;
+
+            background: white;
+
+            box-shadow:
+                0 0 0 3px rgba(37, 99, 235, 0.08);
+        }
+
+
+        .help-text {
+            font-size: 10px;
+
+            color: #9ca3af;
+
+            font-weight: normal;
+        }
+
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .button-row {
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 25px;
+        }
+
+
+        button {
+            border: none;
+
+            border-radius: 8px;
+
+            padding: 13px 20px;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+
+        .predict-btn {
+            flex: 1;
+
+            background: #2563eb;
+
+            color: white;
+        }
+
+
+        .predict-btn:hover {
+            background: #1d4ed8;
+
+            transform: translateY(-1px);
+        }
+
+
+        .clear-btn {
+            background: #f3f4f6;
+
+            color: #4b5563;
+        }
+
+
+        .clear-btn:hover {
+            background: #e5e7eb;
+        }
+
+
+        .save-btn {
+            width: 100%;
+
+            margin-top: 15px;
+
+            background: #111827;
+
+            color: white;
+
+            display: none;
+        }
+
+
+        .save-btn:hover {
+            background: #1f2937;
+        }
+
+
+        /* =========================
+           RESULTS
+        ========================= */
+
+        .result-panel {
+            position: sticky;
+
+            top: 25px;
+        }
+
+
+        .result-empty {
+            text-align: center;
+
+            padding: 45px 20px;
+
+            color: #9ca3af;
+        }
+
+
+        .result-empty-icon {
+            width: 65px;
+            height: 65px;
+
+            margin: 0 auto 15px;
+
+            background: #eff6ff;
+
+            border-radius: 18px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 28px;
+        }
+
+
+        .result-empty h3 {
+            margin: 0;
+
+            color: #374151;
+
+            font-size: 16px;
+        }
+
+
+        .result-empty p {
+            font-size: 12px;
+
+            line-height: 1.6;
+
+            margin-top: 8px;
+        }
+
+
+        .results {
+            display: none;
+        }
+
+
+        .main-result {
+            background: linear-gradient(
+                135deg,
+                #eff6ff,
+                #ffffff
+            );
+
+            border: 1px solid #dbeafe;
+
+            border-radius: 12px;
+
+            padding: 22px;
+
+            text-align: center;
+
+            margin-bottom: 15px;
+        }
+
+
+        .main-result-label {
+            font-size: 12px;
+
+            color: #6b7280;
+        }
+
+
+        .main-result-number {
+            font-size: 46px;
+
+            font-weight: bold;
+
+            color: #2563eb;
+
+            margin: 8px 0;
+        }
+
+
+        .main-result-description {
+            font-size: 11px;
+
+            color: #9ca3af;
+        }
+
+
+        .result-cards {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 12px;
+        }
+
+
+        .result-card {
+            padding: 17px;
+
+            background: #f9fafb;
+
+            border: 1px solid #edf0f3;
+
+            border-radius: 10px;
+        }
+
+
+        .result-card-label {
+            font-size: 11px;
+
+            color: #6b7280;
+        }
+
+
+        .result-card-number {
+            font-size: 23px;
+
+            font-weight: bold;
+
+            margin-top: 7px;
+
+            color: #111827;
+        }
+
+
+        .waste-card {
+            grid-column: 1 / -1;
+
+            background: #fff7ed;
+
+            border-color: #fed7aa;
+        }
+
+
+        .waste-card .result-card-number {
+            color: #c2410c;
+        }
+
+
+        /* =========================
+           INFO BOX
+        ========================= */
+
+        .info-box {
+            margin-top: 18px;
+
+            padding: 14px;
+
+            background: #f8fafc;
+
+            border-radius: 9px;
+
+            border-left: 4px solid #2563eb;
+
+            font-size: 11px;
+
+            color: #6b7280;
+
+            line-height: 1.6;
+        }
+
+
+        .success-message {
+            display: none;
+
+            margin-top: 15px;
+
+            padding: 12px;
+
+            background: #ecfdf5;
+
+            color: #047857;
+
+            border-radius: 8px;
+
+            font-size: 12px;
+
+            text-align: center;
+        }
+
+
+        /* =========================
+           HOW IT WORKS
+        ========================= */
+
+        .how-it-works {
+            margin-top: 22px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+        }
+
+
+        .step {
+            background: white;
+
+            border: 1px solid #e8ebf0;
+
+            border-radius: 12px;
+
+            padding: 18px;
+        }
+
+
+        .step-icon {
+            width: 38px;
+            height: 38px;
+
+            background: #eff6ff;
+
+            border-radius: 10px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 12px;
+        }
+
+
+        .step h3 {
+            margin: 0;
+
+            font-size: 13px;
+        }
+
+
+        .step p {
+            margin: 7px 0 0;
+
+            font-size: 11px;
+
+            line-height: 1.5;
+
+            color: #6b7280;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 1000px) {
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .result-panel {
+                position: static;
+            }
+
+            .how-it-works {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                position: relative;
+
+                width: 100%;
+
+                height: auto;
+
+                padding: 15px;
+            }
+
+            .logo {
+                margin-bottom: 15px;
+            }
+
+            .menu-title,
+            .sidebar-bottom {
+                display: none;
+            }
+
+            .menu {
+                display: flex;
+
+                gap: 5px;
+
+                overflow-x: auto;
+            }
+
+            .menu a {
+                white-space: nowrap;
+            }
+
+            .main {
+                margin-left: 0;
+
+                padding: 20px;
+            }
+
+            .topbar {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                🍽️
+            </div>
+
+            <div>
+
+                <h2>Smart Canteen</h2>
+
+                <span>AI Demand Forecasting</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="menu-title">
+            Main Menu
+        </div>
+
+
+        <div class="menu">
+
+            <a href="/" class="active">
+
+                <span class="menu-icon">🏠</span>
+
+                Prediction
+
+            </a>
+
+
+            <a href="/dashboard">
+
+                <span class="menu-icon">📊</span>
+
+                Dashboard
+
+            </a>
+
+
+            <a href="/history">
+
+                <span class="menu-icon">📋</span>
+
+                History
+
+            </a>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <strong>AI Status</strong>
+
+            <br>
+
+            <span>● Model is ready for prediction</span>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================= -->
+
+    <main class="main">
+
+
+        <!-- TOP BAR -->
+
+        <div class="topbar">
+
+            <div class="page-title">
+
+                <h1>Meal Demand Prediction</h1>
+
+                <p>
+                    Use AI to estimate today's canteen meal demand
+                </p>
+
+            </div>
+
+
+            <div class="ai-status">
+
+                <span class="status-dot"></span>
+
+                AI Model Ready
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             FORM + RESULTS
+        ========================= -->
+
+        <div class="content-grid">
+
+
+            <!-- =========================
+                 INPUT FORM
+            ========================= -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <h2>Enter Today's Information</h2>
+
+                    <p>
+                        Provide the latest canteen data for a more accurate prediction.
+                    </p>
+
+                </div>
+
+
+                <!-- BASIC INFORMATION -->
+
+                <div class="section-title">
+
+                    <span class="section-number">
+                        1
+                    </span>
+
+                    Basic Information
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label for="date">
+                            Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="date">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="day">
+                            Day
+                        </label>
+
+                        <select id="day">
+
+                            <option value="Monday">
+                                Monday
+                            </option>
+
+                            <option value="Tuesday">
+                                Tuesday
+                            </option>
+
+                            <option value="Wednesday">
+                                Wednesday
+                            </option>
+
+                            <option value="Thursday">
+                                Thursday
+                            </option>
+
+                            <option value="Friday">
+                                Friday
+                            </option>
+
+                            <option value="Saturday">
+                                Saturday
+                            </option>
+
+                            <option value="Sunday">
+                                Sunday
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group full">
+
+                        <label for="attendance">
+                            Expected Attendance
+
+                            <span class="help-text">
+                                Number of students expected today
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="attendance"
+                            placeholder="Example: 850"
+                            min="0">
+
+                    </div>
+
+                </div>
+
+
+                <!-- SPECIAL CONDITIONS -->
+
+                <div class="section-title">
+
+                    <span class="section-number">
+                        2
+                    </span>
+
+                    Special Conditions
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label for="exam">
+                            Exam Day?
+                        </label>
+
+                        <select id="exam">
+
+                            <option value="0">
+                                No
+                            </option>
+
+                            <option value="1">
+                                Yes
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="holiday">
+                            Holiday?
+                        </label>
+
+                        <select id="holiday">
+
+                            <option value="0">
+                                No
+                            </option>
+
+                            <option value="1">
+                                Yes
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group full">
+
+                        <label for="event">
+                            Special Event?
+
+                            <span class="help-text">
+                                Festival, college event, etc.
+                            </span>
+
+                        </label>
+
+                        <select id="event">
+
+                            <option value="0">
+                                No
+                            </option>
+
+                            <option value="1">
+                                Yes
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- HISTORICAL DATA -->
+
+                <div class="section-title">
+
+                    <span class="section-number">
+                        3
+                    </span>
+
+                    Historical Sales
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label for="previous_sales">
+                            Previous Day Sales
+                        </label>
+
+                        <input
+                            type="number"
+                            id="previous_sales"
+                            placeholder="Example: 800"
+                            min="0">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="same_day_last_week">
+                            Same Day Last Week
+                        </label>
+
+                        <input
+                            type="number"
+                            id="same_day_last_week"
+                            placeholder="Example: 790"
+                            min="0">
+
+                    </div>
+
+
+                    <div class="form-group full">
+
+                        <label for="actual_sales">
+                            Actual Sales
+
+                            <span class="help-text">
+                                Enter after the day is completed
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="actual_sales"
+                            placeholder="Example: 780"
+                            min="0">
+
+                    </div>
+
+                </div>
+
+
+                <!-- BUTTONS -->
+
+                <div class="button-row">
+
+                    <button
+                        class="predict-btn"
+                        onclick="predictMeals()">
+
+                        🤖 Predict Meal Demand
+
+                    </button>
+
+
+                    <button
+                        class="clear-btn"
+                        onclick="clearForm()">
+
+                        Clear
+
+                    </button>
+
+                </div>
+
+
+                <button
+                    class="save-btn"
+                    id="saveButton"
+                    onclick="saveRecord()">
+
+                    💾 Save Daily Record
+
+                </button>
+
+
+                <div
+                    class="success-message"
+                    id="successMessage">
+
+                    ✓ Daily record saved successfully!
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 RESULT PANEL
+            ========================= -->
+
+            <div class="panel result-panel">
+
+
+                <div class="panel-header">
+
+                    <h2>AI Prediction</h2>
+
+                    <p>
+                        Your prediction results will appear here
+                    </p>
+
+                </div>
+
+
+                <!-- EMPTY STATE -->
+
+                <div
+                    class="result-empty"
+                    id="emptyResult">
+
+                    <div class="result-empty-icon">
+                        🤖
+                    </div>
+
+                    <h3>
+                        Ready to Predict
+                    </h3>
+
+                    <p>
+                        Enter today's attendance and historical
+                        sales information, then click
+                        <strong>Predict Meal Demand</strong>.
+                    </p>
+
+                </div>
+
+
+                <!-- RESULTS -->
+
+                <div
+                    class="results"
+                    id="results">
+
+
+                    <div class="main-result">
+
+                        <div class="main-result-label">
+                            AI Predicted Demand
+                        </div>
+
+                        <div
+                            class="main-result-number"
+                            id="predictedMeals">
+
+                            0
+
+                        </div>
+
+                        <div class="main-result-description">
+                            meals expected to be sold
+                        </div>
+
+                    </div>
+
+
+                    <div class="result-cards">
+
+
+                        <div class="result-card">
+
+                            <div class="result-card-label">
+                                Recommended Preparation
+                            </div>
+
+                            <div
+                                class="result-card-number"
+                                id="recommendedMeals">
+
+                                0
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="result-card">
+
+                            <div class="result-card-label">
+                                Actual Sales
+                            </div>
+
+                            <div
+                                class="result-card-number"
+                                id="displayActualSales">
+
+                                0
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="result-card waste-card">
+
+                            <div class="result-card-label">
+                                Estimated Food Waste
+                            </div>
+
+                            <div
+                                class="result-card-number"
+                                id="foodWaste">
+
+                                0
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        💡 The recommended quantity includes a
+                        <strong>5% safety buffer</strong> above the
+                        AI prediction to reduce the chance of meals
+                        running out.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             HOW IT WORKS
+        ========================= -->
+
+        <div class="how-it-works">
+
+
+            <div class="step">
+
+                <div class="step-icon">
+                    📊
+                </div>
+
+                <h3>
+                    1. Enter Data
+                </h3>
+
+                <p>
+                    Provide attendance, day information,
+                    special conditions and previous sales.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-icon">
+                    🤖
+                </div>
+
+                <h3>
+                    2. AI Predicts
+                </h3>
+
+                <p>
+                    The Random Forest model analyzes the
+                    information and estimates meal demand.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-icon">
+                    ♻️
+                </div>
+
+                <h3>
+                    3. Reduce Waste
+                </h3>
+
+                <p>
+                    Use the recommendation to prepare a more
+                    suitable quantity of food.
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </main>
+
+
+    <script>
+
+
+        // =========================
+        // SET TODAY'S DATE
+        // =========================
+
+        const today =
+            new Date();
+
+
+        const year =
+            today.getFullYear();
+
+
+        const month =
+            String(
+                today.getMonth() + 1
+            ).padStart(2, "0");
+
+
+        const day =
+            String(
+                today.getDate()
+            ).padStart(2, "0");
+
+
+        document.getElementById(
+            "date"
+        ).value =
+            `${year}-${month}-${day}`;
+
+
+        // Automatically select today's day
+
+        const dayNames = [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
+        ];
+
+
+        document.getElementById(
+            "day"
+        ).value =
+            dayNames[
+                today.getDay()
+            ];
+
+
+        // =========================
+        // PREDICTION
+        // =========================
+
+        async function predictMeals() {
+
+
+            const attendance =
+                document.getElementById(
+                    "attendance"
+                ).value;
+
+
+            const previousSales =
+                document.getElementById(
+                    "previous_sales"
+                ).value;
+
+
+            const sameDaySales =
+                document.getElementById(
+                    "same_day_last_week"
+                ).value;
+
+
+            const actualSales =
+                document.getElementById(
+                    "actual_sales"
+                ).value;
+
+
+            // Validation
+
+            if (
+                attendance === "" ||
+                previousSales === "" ||
+                sameDaySales === ""
+            ) {
+
+                alert(
+                    "Please enter attendance, previous day sales and same day last week sales."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                Number(attendance) < 0 ||
+                Number(previousSales) < 0 ||
+                Number(sameDaySales) < 0
+            ) {
+
+                alert(
+                    "Please enter valid positive values."
+                );
+
+                return;
+
+            }
+
+
+            // Create request data
+
+            const data = {
+
+                attendance:
+                    Number(attendance),
+
+                day:
+                    document.getElementById(
+                        "day"
+                    ).value,
+
+                exam:
+                    Number(
+                        document.getElementById(
+                            "exam"
+                        ).value
+                    ),
+
+                holiday:
+                    Number(
+                        document.getElementById(
+                            "holiday"
+                        ).value
+                    ),
+
+                event:
+                    Number(
+                        document.getElementById(
+                            "event"
+                        ).value
+                    ),
+
+                previous_sales:
+                    Number(previousSales),
+
+                same_day_last_week:
+                    Number(sameDaySales)
+
+            };
+
+
+            try {
+
+
+                const response =
+                    await fetch(
+                        "/predict",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(data)
+
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                // Display prediction
+
+                document.getElementById(
+                    "predictedMeals"
+                ).innerText =
+                    result.predicted_meals;
+
+
+                document.getElementById(
+                    "recommendedMeals"
+                ).innerText =
+                    result.recommended_meals;
+
+
+                // Actual sales
+
+                const actual =
+                    Number(actualSales) || 0;
+
+
+                document.getElementById(
+                    "displayActualSales"
+                ).innerText =
+                    actual;
+
+
+                // Estimated waste
+
+                let waste =
+                    result.recommended_meals -
+                    actual;
+
+
+                if (waste < 0) {
+
+                    waste = 0;
+
+                }
+
+
+                document.getElementById(
+                    "foodWaste"
+                ).innerText =
+                    waste;
+
+
+                // Show results
+
+                document.getElementById(
+                    "emptyResult"
+                ).style.display =
+                    "none";
+
+
+                document.getElementById(
+                    "results"
+                ).style.display =
+                    "block";
+
+
+                // Show save button
+
+                document.getElementById(
+                    "saveButton"
+                ).style.display =
+                    "block";
+
+
+                // Hide previous success message
+
+                document.getElementById(
+                    "successMessage"
+                ).style.display =
+                    "none";
+
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    error
+                );
+
+                alert(
+                    "Unable to get prediction. Please make sure the Flask server is running."
+                );
+
+            }
+
+        }
+
+
+        // =========================
+        // SAVE RECORD
+        // =========================
+
+        async function saveRecord() {
+
+
+            const date =
+                document.getElementById(
+                    "date"
+                ).value;
+
+
+            const attendance =
+                Number(
+                    document.getElementById(
+                        "attendance"
+                    ).value
+                );
+
+
+            const actualSales =
+                Number(
+                    document.getElementById(
+                        "actual_sales"
+                    ).value
+                );
+
+
+            const predictedMeals =
+                Number(
+                    document.getElementById(
+                        "predictedMeals"
+                    ).innerText
+                );
+
+
+            const recommendedMeals =
+                Number(
+                    document.getElementById(
+                        "recommendedMeals"
+                    ).innerText
+                );
+
+
+            const foodWaste =
+                Number(
+                    document.getElementById(
+                        "foodWaste"
+                    ).innerText
+                );
+
+
+            if (!date) {
+
+                alert(
+                    "Please select a date."
+                );
+
+                return;
+
+            }
+
+
+            if (!actualSales && actualSales !== 0) {
+
+                alert(
+                    "Please enter actual sales."
+                );
+
+                return;
+
+            }
+
+
+            const data = {
+
+                date:
+                    date,
+
+                attendance:
+                    attendance,
+
+                predicted_meals:
+                    predictedMeals,
+
+                recommended_meals:
+                    recommendedMeals,
+
+                actual_sales:
+                    actualSales,
+
+                food_waste:
+                    foodWaste
+
+            };
+
+
+            try {
+
+
+                const response =
+                    await fetch(
+                        "/save",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(data)
+
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                if (response.ok) {
+
+
+                    document.getElementById(
+                        "successMessage"
+                    ).innerText =
+                        "✓ " +
+                        result.message;
+
+
+                    document.getElementById(
+                        "successMessage"
+                    ).style.display =
+                        "block";
+
+
+                    /*
+                       IMPORTANT:
+                       No redirect to History.
+                       The user stays on this page.
+                    */
+
+                }
+
+                else {
+
+                    alert(
+                        "Unable to save record."
+                    );
+
+                }
+
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    error
+                );
+
+                alert(
+                    "Error saving daily record."
+                );
+
+            }
+
+        }
+
+
+        // =========================
+        // CLEAR FORM
+        // =========================
+
+        function clearForm() {
+
+
+            document.getElementById(
+                "attendance"
+            ).value = "";
+
+
+            document.getElementById(
+                "previous_sales"
+            ).value = "";
+
+
+            document.getElementById(
+                "same_day_last_week"
+            ).value = "";
+
+
+            document.getElementById(
+                "actual_sales"
+            ).value = "";
+
+
+            document.getElementById(
+                "exam"
+            ).value = "0";
+
+
+            document.getElementById(
+                "holiday"
+            ).value = "0";
+
+
+            document.getElementById(
+                "event"
+            ).value = "0";
+
+
+            document.getElementById(
+                "emptyResult"
+            ).style.display =
+                "block";
+
+
+            document.getElementById(
+                "results"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "saveButton"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "successMessage"
+            ).style.display =
+                "none";
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>

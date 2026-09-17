@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Canteen AI - Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+
+            width: 240px;
+            height: 100vh;
+
+            background: #111827;
+            color: white;
+
+            padding: 25px 18px;
+
+            z-index: 10;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 40px;
+            padding-left: 8px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+
+            background: #2563eb;
+
+            border-radius: 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 21px;
+        }
+
+        .logo h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .logo span {
+            display: block;
+
+            font-size: 11px;
+
+            color: #9ca3af;
+
+            margin-top: 3px;
+        }
+
+        .menu-title {
+            font-size: 11px;
+            color: #6b7280;
+
+            text-transform: uppercase;
+
+            margin: 20px 10px 10px;
+        }
+
+        .menu a {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 13px 14px;
+
+            margin-bottom: 6px;
+
+            border-radius: 9px;
+
+            color: #d1d5db;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            transition: 0.2s;
+        }
+
+        .menu a:hover {
+            background: #1f2937;
+            color: white;
+        }
+
+        .menu a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .menu-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-bottom {
+            position: absolute;
+
+            bottom: 25px;
+
+            left: 18px;
+            right: 18px;
+
+            padding: 15px;
+
+            background: #1f2937;
+
+            border-radius: 10px;
+
+            font-size: 12px;
+
+            color: #9ca3af;
+        }
+
+        .sidebar-bottom strong {
+            color: white;
+        }
+
+
+        /* =========================
+           MAIN CONTENT
+        ========================= */
+
+        .main {
+            margin-left: 240px;
+
+            padding: 30px 35px;
+
+            min-height: 100vh;
+        }
+
+
+        /* =========================
+           TOP BAR
+        ========================= */
+
+        .topbar {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            margin: 0;
+
+            font-size: 28px;
+
+            color: #111827;
+        }
+
+        .page-title p {
+            margin: 7px 0 0;
+
+            color: #6b7280;
+
+            font-size: 14px;
+        }
+
+        .date-box {
+            background: white;
+
+            padding: 11px 16px;
+
+            border-radius: 9px;
+
+            border: 1px solid #e5e7eb;
+
+            font-size: 13px;
+
+            color: #6b7280;
+        }
+
+
+        /* =========================
+           KPI CARDS
+        ========================= */
+
+        .cards {
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+
+            border-radius: 14px;
+
+            padding: 20px;
+
+            border: 1px solid #e8ebf0;
+
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .card-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+        }
+
+        .card-title {
+            color: #6b7280;
+
+            font-size: 13px;
+        }
+
+        .card-icon {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 10px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 18px;
+
+            background: #eff6ff;
+        }
+
+        .card-number {
+            font-size: 28px;
+
+            font-weight: bold;
+
+            margin-top: 15px;
+
+            color: #111827;
+        }
+
+        .card-description {
+            margin-top: 7px;
+
+            font-size: 11px;
+
+            color: #9ca3af;
+        }
+
+
+        /* =========================
+           GRID
+        ========================= */
+
+        .grid {
+            display: grid;
+
+            grid-template-columns: 2fr 1fr;
+
+            gap: 20px;
+
+            margin-bottom: 20px;
+        }
+
+        .panel {
+            background: white;
+
+            border-radius: 14px;
+
+            padding: 22px;
+
+            border: 1px solid #e8ebf0;
+
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .panel-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 18px;
+        }
+
+        .panel-header h3 {
+            margin: 0;
+
+            font-size: 16px;
+
+            color: #111827;
+        }
+
+        .panel-header span {
+            font-size: 12px;
+
+            color: #9ca3af;
+        }
+
+
+        /* =========================
+           CHART
+        ========================= */
+
+        .chart-container {
+            position: relative;
+
+            height: 300px;
+        }
+
+
+        /* =========================
+           AI INSIGHT
+        ========================= */
+
+        .ai-panel {
+            background: linear-gradient(
+                135deg,
+                #eff6ff,
+                #ffffff
+            );
+
+            border: 1px solid #dbeafe;
+        }
+
+        .ai-header {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 18px;
+        }
+
+        .ai-icon {
+            width: 44px;
+            height: 44px;
+
+            background: #2563eb;
+
+            color: white;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+        }
+
+        .ai-header h3 {
+            margin: 0;
+
+            font-size: 16px;
+        }
+
+        .ai-header p {
+            margin: 4px 0 0;
+
+            font-size: 11px;
+
+            color: #6b7280;
+        }
+
+        #insightText {
+            font-size: 14px;
+
+            line-height: 1.7;
+
+            color: #4b5563;
+        }
+
+        .recommendation {
+            margin-top: 18px;
+
+            padding: 13px;
+
+            background: white;
+
+            border-radius: 9px;
+
+            border-left: 4px solid #2563eb;
+
+            font-size: 12px;
+
+            color: #4b5563;
+        }
+
+
+        /* =========================
+           ACCURACY
+        ========================= */
+
+        .accuracy-value {
+            font-size: 35px;
+
+            font-weight: bold;
+
+            margin: 10px 0;
+
+            color: #111827;
+        }
+
+        .progress {
+            height: 8px;
+
+            background: #e5e7eb;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+
+            width: 0%;
+
+            background: #2563eb;
+
+            border-radius: 10px;
+
+            transition: width 0.8s;
+        }
+
+        .accuracy-description {
+            margin-top: 12px;
+
+            font-size: 12px;
+
+            color: #6b7280;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           RECENT RECORDS
+        ========================= */
+
+        .table-panel {
+            margin-top: 20px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            font-size: 13px;
+        }
+
+        th {
+            text-align: left;
+
+            padding: 13px 10px;
+
+            color: #6b7280;
+
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 14px 10px;
+
+            border-bottom: 1px solid #f0f1f3;
+
+            color: #374151;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status {
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            font-size: 10px;
+
+            font-weight: bold;
+
+            display: inline-block;
+        }
+
+        .status-normal {
+            background: #ecfdf5;
+
+            color: #047857;
+        }
+
+        .status-high {
+            background: #fff7ed;
+
+            color: #c2410c;
+        }
+
+        .status-low {
+            background: #fef2f2;
+
+            color: #b91c1c;
+        }
+
+
+        /* =========================
+           EMPTY STATE
+        ========================= */
+
+        .empty {
+            text-align: center;
+
+            padding: 35px;
+
+            color: #9ca3af;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 1100px) {
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                position: relative;
+
+                width: 100%;
+
+                height: auto;
+
+                padding: 15px;
+            }
+
+            .logo {
+                margin-bottom: 15px;
+            }
+
+            .menu {
+                display: flex;
+
+                gap: 5px;
+
+                overflow-x: auto;
+            }
+
+            .menu-title,
+            .sidebar-bottom {
+                display: none;
+            }
+
+            .menu a {
+                white-space: nowrap;
+            }
+
+            .main {
+                margin-left: 0;
+
+                padding: 20px;
+            }
+
+            .topbar {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 15px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                🍽️
+            </div>
+
+            <div>
+
+                <h2>Smart Canteen</h2>
+
+                <span>AI Demand Forecasting</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="menu-title">
+            Main Menu
+        </div>
+
+
+        <div class="menu">
+
+            <a href="/">
+
+                <span class="menu-icon">🏠</span>
+
+                Home
+
+            </a>
+
+
+            <a href="/dashboard" class="active">
+
+                <span class="menu-icon">📊</span>
+
+                Dashboard
+
+            </a>
+
+
+            <a href="/history">
+
+                <span class="menu-icon">📋</span>
+
+                History
+
+            </a>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <strong>AI Status</strong>
+
+            <br>
+
+            <span>● Model is ready for prediction</span>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================= -->
+
+    <main class="main">
+
+
+        <!-- Top Bar -->
+
+        <div class="topbar">
+
+            <div class="page-title">
+
+                <h1>Dashboard</h1>
+
+                <p>
+                    Monitor canteen demand, sales and food waste
+                </p>
+
+            </div>
+
+
+            <div class="date-box">
+
+                📅
+                <span id="currentDate">
+                    Loading...
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             KPI CARDS
+        ========================= -->
+
+        <div class="cards">
+
+
+            <div class="card">
+
+                <div class="card-top">
+
+                    <div class="card-title">
+                        Total Predicted
+                    </div>
+
+                    <div class="card-icon">
+                        🤖
+                    </div>
+
+                </div>
+
+                <div
+                    class="card-number"
+                    id="totalPredicted">
+                    0
+                </div>
+
+                <div class="card-description">
+                    Meals predicted by AI
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-top">
+
+                    <div class="card-title">
+                        Total Sold
+                    </div>
+
+                    <div class="card-icon">
+                        🍽️
+                    </div>
+
+                </div>
+
+                <div
+                    class="card-number"
+                    id="totalSold">
+                    0
+                </div>
+
+                <div class="card-description">
+                    Actual meals sold
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-top">
+
+                    <div class="card-title">
+                        Food Waste
+                    </div>
+
+                    <div class="card-icon">
+                        ♻️
+                    </div>
+
+                </div>
+
+                <div
+                    class="card-number"
+                    id="totalWaste">
+                    0
+                </div>
+
+                <div class="card-description">
+                    Estimated wasted meals
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-top">
+
+                    <div class="card-title">
+                        Waste Rate
+                    </div>
+
+                    <div class="card-icon">
+                        📉
+                    </div>
+
+                </div>
+
+                <div
+                    class="card-number"
+                    id="wastePercentage">
+                    0%
+                </div>
+
+                <div class="card-description">
+                    Waste compared with predictions
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             CHARTS
+        ========================= -->
+
+        <div class="grid">
+
+
+            <!-- Food Waste Chart -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <h3>Food Waste Trend</h3>
+
+                    <span>
+                        Daily analysis
+                    </span>
+
+                </div>
+
+                <div class="chart-container">
+
+                    <canvas id="wasteChart"></canvas>
+
+                </div>
+
+            </div>
+
+
+            <!-- Accuracy -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <h3>Prediction Performance</h3>
+
+                    <span>AI Model</span>
+
+                </div>
+
+
+                <div class="accuracy-value">
+
+                    <span id="accuracy">
+                        0
+                    </span>%
+
+                </div>
+
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar"
+                        id="accuracyBar">
+                    </div>
+
+                </div>
+
+
+                <div class="accuracy-description">
+
+                    This represents how closely the AI
+                    prediction matches actual meals sold.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             PREDICTED VS ACTUAL
+        ========================= -->
+
+        <div class="panel" style="margin-bottom:20px;">
+
+            <div class="panel-header">
+
+                <h3>Predicted vs Actual Sales</h3>
+
+                <span>
+                    Demand comparison
+                </span>
+
+            </div>
+
+            <div class="chart-container">
+
+                <canvas id="comparisonChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             AI INSIGHT
+        ========================= -->
+
+        <div class="grid">
+
+
+            <div class="panel ai-panel">
+
+                <div class="ai-header">
+
+                    <div class="ai-icon">
+                        🤖
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            AI Demand Insight
+                        </h3>
+
+                        <p>
+                            Automated analysis of your canteen data
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <p id="insightText">
+
+                    Loading AI insights...
+
+                </p>
+
+
+                <div class="recommendation">
+
+                    💡 <strong>Recommendation:</strong>
+
+                    <span id="recommendationText">
+                        Analyzing your records...
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <h3>Quick Summary</h3>
+
+                </div>
+
+
+                <p style="font-size:13px;color:#6b7280;line-height:1.7;">
+
+                    The dashboard uses your saved daily records
+                    to compare AI predictions with actual demand.
+
+                    <br><br>
+
+                    This helps the canteen identify demand
+                    patterns and reduce unnecessary food
+                    preparation.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             RECENT RECORDS
+        ========================= -->
+
+        <div class="panel table-panel">
+
+            <div class="panel-header">
+
+                <h3>Recent Records</h3>
+
+                <span>
+                    Latest canteen activity
+                </span>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Date</th>
+
+                            <th>Attendance</th>
+
+                            <th>Predicted</th>
+
+                            <th>Recommended</th>
+
+                            <th>Actual Sales</th>
+
+                            <th>Waste</th>
+
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="recordsTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+    </main>
+
+
+    <script>
+
+
+        // =========================
+        // CURRENT DATE
+        // =========================
+
+        const today = new Date();
+
+        document.getElementById("currentDate").innerText =
+            today.toLocaleDateString(
+                "en-IN",
+                {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                }
+            );
+
+
+        // =========================
+        // CHART VARIABLES
+        // =========================
+
+        let wasteChart;
+
+        let comparisonChart;
+
+
+        // =========================
+        // LOAD DASHBOARD
+        // =========================
+
+        async function loadDashboard() {
+
+            try {
+
+                const response =
+                    await fetch("/history-data");
+
+
+                const records =
+                    await response.json();
+
+
+                // No records
+
+                if (records.length === 0) {
+
+                    showEmptyState();
+
+                    return;
+
+                }
+
+
+                // =========================
+                // TOTALS
+                // =========================
+
+                let totalPredicted = 0;
+
+                let totalSold = 0;
+
+                let totalWaste = 0;
+
+
+                records.forEach(record => {
+
+                    totalPredicted +=
+                        Number(record.predicted_meals);
+
+                    totalSold +=
+                        Number(record.actual_sales);
+
+                    totalWaste +=
+                        Number(record.food_waste);
+
+                });
+
+
+                // =========================
+                // WASTE %
+                // =========================
+
+                let wastePercentage = 0;
+
+
+                if (totalPredicted > 0) {
+
+                    wastePercentage =
+                        (totalWaste / totalPredicted) * 100;
+
+                }
+
+
+                // =========================
+                // ACCURACY
+                // =========================
+
+                let accuracy = 0;
+
+
+                if (totalSold > 0) {
+
+                    let error =
+                        Math.abs(
+                            totalPredicted - totalSold
+                        );
+
+                    accuracy =
+                        100 -
+                        ((error / totalSold) * 100);
+
+                }
+
+
+                // Keep accuracy between 0 and 100
+
+                accuracy =
+                    Math.max(
+                        0,
+                        Math.min(100, accuracy)
+                    );
+
+
+                // =========================
+                // UPDATE CARDS
+                // =========================
+
+                document.getElementById(
+                    "totalPredicted"
+                ).innerText =
+                    totalPredicted;
+
+
+                document.getElementById(
+                    "totalSold"
+                ).innerText =
+                    totalSold;
+
+
+                document.getElementById(
+                    "totalWaste"
+                ).innerText =
+                    totalWaste;
+
+
+                document.getElementById(
+                    "wastePercentage"
+                ).innerText =
+                    wastePercentage.toFixed(1) + "%";
+
+
+                // =========================
+                // ACCURACY
+                // =========================
+
+                document.getElementById(
+                    "accuracy"
+                ).innerText =
+                    accuracy.toFixed(1);
+
+
+                document.getElementById(
+                    "accuracyBar"
+                ).style.width =
+                    accuracy + "%";
+
+
+                // =========================
+                // CHART DATA
+                // =========================
+
+                const chartRecords =
+                    [...records].reverse();
+
+
+                const dates = [];
+
+                const wastes = [];
+
+                const predicted = [];
+
+                const actual = [];
+
+
+                chartRecords.forEach(record => {
+
+                    dates.push(record.date);
+
+                    wastes.push(
+                        Number(record.food_waste)
+                    );
+
+                    predicted.push(
+                        Number(record.predicted_meals)
+                    );
+
+                    actual.push(
+                        Number(record.actual_sales)
+                    );
+
+                });
+
+
+                // =========================
+                // WASTE CHART
+                // =========================
+
+                const wasteCtx =
+                    document
+                        .getElementById("wasteChart")
+                        .getContext("2d");
+
+
+                if (wasteChart) {
+
+                    wasteChart.destroy();
+
+                }
+
+
+                wasteChart = new Chart(
+                    wasteCtx,
+                    {
+
+                        type: "line",
+
+                        data: {
+
+                            labels: dates,
+
+                            datasets: [
+
+                                {
+
+                                    label:
+                                        "Food Waste",
+
+                                    data:
+                                        wastes,
+
+                                    borderWidth: 3,
+
+                                    tension: 0.35,
+
+                                    fill: false
+
+                                }
+
+                            ]
+
+                        },
+
+                        options: {
+
+                            responsive: true,
+
+                            maintainAspectRatio: false,
+
+                            plugins: {
+
+                                legend: {
+
+                                    display: true
+
+                                }
+
+                            },
+
+                            scales: {
+
+                                y: {
+
+                                    beginAtZero: true,
+
+                                    title: {
+
+                                        display: true,
+
+                                        text:
+                                            "Meals Wasted"
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+                );
+
+
+                // =========================
+                // COMPARISON CHART
+                // =========================
+
+                const comparisonCtx =
+                    document
+                        .getElementById(
+                            "comparisonChart"
+                        )
+                        .getContext("2d");
+
+
+                comparisonChart =
+                    new Chart(
+                        comparisonCtx,
+                        {
+
+                            type: "bar",
+
+                            data: {
+
+                                labels: dates,
+
+                                datasets: [
+
+                                    {
+
+                                        label:
+                                            "AI Predicted",
+
+                                        data:
+                                            predicted,
+
+                                        borderWidth: 1
+
+                                    },
+
+                                    {
+
+                                        label:
+                                            "Actual Sales",
+
+                                        data:
+                                            actual,
+
+                                        borderWidth: 1
+
+                                    }
+
+                                ]
+
+                            },
+
+                            options: {
+
+                                responsive: true,
+
+                                maintainAspectRatio: false,
+
+                                scales: {
+
+                                    y: {
+
+                                        beginAtZero: true,
+
+                                        title: {
+
+                                            display: true,
+
+                                            text:
+                                                "Meals"
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+                    );
+
+
+                // =========================
+                // AI INSIGHT
+                // =========================
+
+                const averageWaste =
+                    totalWaste /
+                    records.length;
+
+
+                const highestWaste =
+                    Math.max(
+                        ...records.map(
+                            record =>
+                                Number(
+                                    record.food_waste
+                                )
+                        )
+                    );
+
+
+                let insight = "";
+
+
+                if (wastePercentage > 15) {
+
+                    insight =
+                        "Food waste is relatively high. " +
+                        "The canteen may be preparing more meals " +
+                        "than the actual demand. " +
+                        "Using attendance and previous sales trends " +
+                        "can help improve preparation decisions.";
+
+                }
+
+                else if (wastePercentage > 8) {
+
+                    insight =
+                        "Food waste is moderate. " +
+                        "The AI predictions are providing a useful " +
+                        "estimate, but the preparation quantity can " +
+                        "still be fine-tuned using actual sales.";
+
+                }
+
+                else {
+
+                    insight =
+                        "Food waste is currently low. " +
+                        "The demand predictions appear to be closely " +
+                        "matching actual canteen requirements.";
+
+                }
+
+
+                document.getElementById(
+                    "insightText"
+                ).innerText =
+                    insight;
+
+
+                // =========================
+                // RECOMMENDATION
+                // =========================
+
+                let recommendation = "";
+
+
+                if (wastePercentage > 15) {
+
+                    recommendation =
+                        "Consider preparing slightly fewer meals " +
+                        "on days where attendance is expected to be low.";
+
+                }
+
+                else if (wastePercentage > 8) {
+
+                    recommendation =
+                        "Continue tracking actual sales and use " +
+                        "the historical records to improve future predictions.";
+
+                }
+
+                else {
+
+                    recommendation =
+                        "Maintain the current preparation strategy " +
+                        "and continue collecting daily data.";
+
+                }
+
+
+                document.getElementById(
+                    "recommendationText"
+                ).innerText =
+                    recommendation;
+
+
+                // =========================
+                // RECENT RECORDS TABLE
+                // =========================
+
+                const table =
+                    document.getElementById(
+                        "recordsTable"
+                    );
+
+
+                table.innerHTML = "";
+
+
+                const recentRecords =
+                    records.slice(0, 7);
+
+
+                recentRecords.forEach(record => {
+
+
+                    const predicted =
+                        Number(
+                            record.predicted_meals
+                        );
+
+
+                    const actual =
+                        Number(
+                            record.actual_sales
+                        );
+
+
+                    const waste =
+                        Number(
+                            record.food_waste
+                        );
+
+
+                    const difference =
+                        actual - predicted;
+
+
+                    let status =
+                        "Normal";
+
+
+                    let statusClass =
+                        "status-normal";
+
+
+                    if (difference > 50) {
+
+                        status =
+                            "High Demand";
+
+                        statusClass =
+                            "status-high";
+
+                    }
+
+                    else if (difference < -50) {
+
+                        status =
+                            "Low Demand";
+
+                        statusClass =
+                            "status-low";
+
+                    }
+
+
+                    const row =
+                        document.createElement(
+                            "tr"
+                        );
+
+
+                    row.innerHTML = `
+
+                        <td>
+                            ${record.date}
+                        </td>
+
+                        <td>
+                            ${record.attendance}
+                        </td>
+
+                        <td>
+                            ${predicted}
+                        </td>
+
+                        <td>
+                            ${record.recommended_meals}
+                        </td>
+
+                        <td>
+                            ${actual}
+                        </td>
+
+                        <td>
+                            ${waste}
+                        </td>
+
+                        <td>
+
+                            <span
+                                class="status ${statusClass}">
+                                ${status}
+                            </span>
+
+                        </td>
+
+                    `;
+
+
+                    table.appendChild(row);
+
+                });
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Dashboard error:",
+                    error
+                );
+
+
+                document.getElementById(
+                    "insightText"
+                ).innerText =
+                    "Unable to load dashboard data. Please make sure the Flask server is running.";
+
+            }
+
+        }
+
+
+        // =========================
+        // EMPTY STATE
+        // =========================
+
+        function showEmptyState() {
+
+            document.getElementById(
+                "insightText"
+            ).innerText =
+                "No daily records are available yet. Go to the Home page, make a prediction and save a daily record to start building your dashboard.";
+
+
+            document.getElementById(
+                "recommendationText"
+            ).innerText =
+                "Start recording daily canteen demand data.";
+
+
+            document.getElementById(
+                "recordsTable"
+            ).innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="empty">
+
+                        No daily records available yet.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+
+        // =========================
+        // START
+        // =========================
+
+        loadDashboard();
+
+    </script>
+
+
+</body>
+
+</html>
